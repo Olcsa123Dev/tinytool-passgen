@@ -1,0 +1,73 @@
+<div class="card" style="max-width: 400px; margin: auto;">
+  <h1>Jelszógenerátor</h1>
+  
+  <label for="length">Hosszúság: <span id="lengthValue">12</span> karakter</label>
+  <input type="range" id="length" min="6" max="32" value="12" />
+  
+  <div style="margin: 1rem 0;">
+    <label><input type="checkbox" id="lowercase" checked /> Kisbetűk</label><br/>
+    <label><input type="checkbox" id="uppercase" checked /> Nagybetűk</label><br/>
+    <label><input type="checkbox" id="numbers" checked /> Számok</label><br/>
+    <label><input type="checkbox" id="symbols" /> Speciális karakterek</label>
+  </div>
+  
+  <button id="generateBtn">Jelszó generálása</button>
+  
+  <div class="result-box" id="result" style="margin-top: 1rem; user-select: all; cursor: pointer;" title="Kattints a másoláshoz">
+    Kattints a gombra a jelszóhoz
+  </div>
+</div>
+
+<script>
+  const lengthInput = document.getElementById('length');
+  const lengthValue = document.getElementById('lengthValue');
+  const generateBtn = document.getElementById('generateBtn');
+  const resultBox = document.getElementById('result');
+
+  lengthInput.addEventListener('input', () => {
+    lengthValue.textContent = lengthInput.value;
+  });
+
+  function generatePassword(length, options) {
+    const lower = 'abcdefghijklmnopqrstuvwxyz';
+    const upper = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+    const numbers = '0123456789';
+    const symbols = '!@#$%^&*()-_=+[]{}|;:,.<>?';
+
+    let chars = '';
+    if (options.lowercase) chars += lower;
+    if (options.uppercase) chars += upper;
+    if (options.numbers) chars += numbers;
+    if (options.symbols) chars += symbols;
+
+    if (!chars) return '';
+
+    let password = '';
+    for (let i = 0; i < length; i++) {
+      password += chars.charAt(Math.floor(Math.random() * chars.length));
+    }
+    return password;
+  }
+
+  generateBtn.addEventListener('click', () => {
+    const length = parseInt(lengthInput.value);
+    const options = {
+      lowercase: document.getElementById('lowercase').checked,
+      uppercase: document.getElementById('uppercase').checked,
+      numbers: document.getElementById('numbers').checked,
+      symbols: document.getElementById('symbols').checked,
+    };
+
+    const pwd = generatePassword(length, options);
+    resultBox.textContent = pwd || 'Válassz legalább egy karaktertípust!';
+  });
+
+  // Másolás kattintásra
+  resultBox.addEventListener('click', () => {
+    const text = resultBox.textContent;
+    if (text && text !== 'Válassz legalább egy karaktertípust!' && text !== 'Kattints a gombra a jelszóhoz') {
+      navigator.clipboard.writeText(text);
+      alert('Jelszó másolva a vágólapra!');
+    }
+  });
+</script>
